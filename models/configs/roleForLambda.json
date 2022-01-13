@@ -1,0 +1,6 @@
+{
+  "assumeService": ["lambda.amazonaws.com"],
+  "description": "Backend deployer for v2pc insfactor",
+  "managedPolicyArns": ["arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole", "arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole", "arn:aws:iam::aws:policy/AWSCodeDeployFullAccess"],
+  "name": "v2pc-role-code-deployer"
+}

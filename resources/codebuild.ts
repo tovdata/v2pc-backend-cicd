@@ -30,6 +30,8 @@ export class BuildProject {
     
     // Set environment variables
     const environmentVariables: codebuild.CfnProject.EnvironmentVariableProperty[] = config.environments.map((elem: any): codebuild.CfnProject.EnvironmentVariableProperty => { return { name: elem.name, value: elem.value, type: "PLAINTEXT" }; });
+    // Add s3 bucket name to store output in environment variables
+    environmentVariables.push({ name: "S3_BUCKET", value: bucketArn, type: "PLAINTEXT" });
     // Create environment (Ref. https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-environment.html)
     const environment: codebuild.CfnProject.EnvironmentProperty = {
       computeType: "BUILD_GENERAL1_SMALL",

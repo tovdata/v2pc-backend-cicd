@@ -4,7 +4,9 @@ import { Construct } from 'constructs';
 import { SERVICE_NAME } from '../models/name';
 // Resources
 import { BuildProject } from '../resources/codebuild';
+import { Application } from '../resources/codedeploy';
 import { Role } from '../resources/iam';
+import { LambdaFunction } from '../resources/lambda';
 import { Bucket } from '../resources/s3';
 import { Topic } from '../resources/sns';
 import { Queue } from '../resources/sqs';
@@ -33,6 +35,12 @@ export class V2PcBackendInfraForCicdStack extends Stack {
 
     // Create the aws codebulid (build project)
     createBuildProjects(this, bucket.getArn(), topic.getArn());
+
+    // Create the aws lambda (function for deploy)
+    createLambdaFunctionForDeploy(this, queue.getArn());
+
+    // Create the aws codedeploy (deployment application and groups)
+    createDeploymentApplication(this);
   }
 }
 
@@ -56,4 +64,52 @@ function createBuildProjects(scope: Construct, bucketArn: string, topicArn: stri
     // Create a notification rule
     buildProject.createNotificationRule(topicArn);
   }
+}
+
+/**
+ * Create the deployment application
+ * @param scope scope context
+ */
+function createDeploymentApplication(scope: Construct): void {
+  // Create a role for deployment group
+  const role = new Role(scope);
+  role.init("roleForCodeDeploy");
+
+  // Create a deployment application
+  const application = new Application(scope);
+  application.init(SERVICE_NAME.CODEDEPLOY);
+
+  // Load a configuration for deployment group
+  const configs: any = loadConfiguration("deploy");
+  // Create the deployment group based config
+  for (const config of configs) {
+    application.createDeploymentGroup(role.getArn(), config);
+  }
+}
+
+/**
+ * Create the function for deploy
+ * @param scope scope context
+ * @param sqsArn arn for sqs
+ */
+function createLambdaFunctionForDeploy(scope: Construct, sqsArn: string): void {
+  // Create a role for lambda function
+  const role = new Role(scope);
+  role.init("roleForLambda");
+
+  // Load a configuration for lambda function
+  const config = loadConfiguration("lambda");
+  // Set enviroment variables
+  const variables: any = {
+    "DEPLOY_APPLICATION": SERVICE_NAME.CODEDEPLOY,
+    "S3_BUCKET": SERVICE_NAME.S3
+  };
+
+  // Create a lambda function (deployer)
+  const lambdaFunc = new LambdaFunction(scope);
+  lambdaFunc.init(role.getArn(), config);
+  // Set environment variables
+  lambdaFunc.setEnvironmentVariables(variables);
+  // Set trigger
+  lambdaFunc.setTrigger(sqsArn);
 }

@@ -1,0 +1,4 @@
+[{
+  "deploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+  "name": "deploy-testCodeDeployLambda"
+}]

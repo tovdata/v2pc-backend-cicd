@@ -1,0 +1,6 @@
+{
+  "description": "deployer for v2pc inspector backend",
+  "memory": 128,
+  "name": "v2pc-inspector-code-deployer",
+  "timeout": 10
+}

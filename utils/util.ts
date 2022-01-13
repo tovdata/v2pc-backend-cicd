@@ -4,8 +4,9 @@ import { join } from "path";
 // Util
 import { printMessageForError } from "./print";
 
-const CONFIG_DIR = "../models/configs";
-const POLICY_DIR = "../models/policies";
+// Directory path
+const CONFIG_DIR = join(__dirname, "../models/configs");
+const POLICY_DIR = join(__dirname, "../models/policies");
 
 /**
  * Create a hash id for use in cdk
@@ -24,7 +25,7 @@ export function createHashId(context: string): string {
 export function loadConfiguration(filename: string): any {
   try {
     // Create file path
-    const filePath = join(__dirname, CONFIG_DIR, `${filename}.json`);
+    const filePath = join(CONFIG_DIR, `${filename}.json`);
     // Read a file data
     const data = readFileSync(filePath).toString();
     // Transform to json and return transformed data
@@ -46,7 +47,7 @@ export function loadConfiguration(filename: string): any {
 export function loadPolicyDocument(service: string): any {
   try {
     // Create file path
-    const filePath = join(__dirname, POLICY_DIR, `${service}.json`);
+    const filePath = join(POLICY_DIR, `${service}.json`);
     // Read a file data
     const data = readFileSync(filePath).toString();
     // Transform to json and return transformed data

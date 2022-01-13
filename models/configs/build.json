@@ -6,9 +6,6 @@
   },{
     "name": "DEPLOY_LAMBDA_ALIAS",
     "value": "testCodeDeployLambda"
-  },{
-    "name": "S3_BUCKET",
-    "value": "v2pc-operation-management"
   }],
   "name": "build-testCodeDeployLambda",
   "source": {
