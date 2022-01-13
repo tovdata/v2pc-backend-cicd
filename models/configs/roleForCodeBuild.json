@@ -1,0 +1,6 @@
+{
+  "assumeService": ["codebuild.amazonaws.com"],
+  "description": "Backend builder for v2pc insfactor",
+  "managedPolicyArns": ["arn:aws:iam::aws:policy/AmazonS3FullAccess", "arn:aws:iam::aws:policy/AmazonSNSFullAccess", "arn:aws:iam::aws:policy/AWSLambda_FullAccess"],
+  "name": "v2pc-role-code-builder"
+}

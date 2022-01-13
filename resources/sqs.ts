@@ -30,10 +30,10 @@ export class Queue {
         value: name
       },{
         key: "Position",
-        value: "ResultQueue"
+        value: "build-result-queue"
       },{
         key: "Project",
-        value: "CICD-for-backend"
+        value: "CICD-for-v2pc-inspector-backend"
       }],
       visibilityTimeout: 30
     };
@@ -45,23 +45,25 @@ export class Queue {
 
   /**
    * Get a arn for queue
+   * @returns arn for queue
    */
-   public getArn() {
+   public getArn(): string {
     return this._queue.attrArn;
   }
 
   /**
    * Get a name for queue
-   * @returns 
+   * @returns name for queue
    */
-  public getName() {
+  public getName(): string {
     return this._queue.attrQueueName;
   }
 
   /**
    * Get a url for queue
+   * @returns url for queue
    */
-   public getUrl() {
+   public getUrl(): string {
     return this._queue.ref;
   }
 

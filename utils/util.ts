@@ -4,6 +4,9 @@ import { join } from "path";
 // Util
 import { printMessageForError } from "./print";
 
+const CONFIG_DIR = "../models/configs";
+const POLICY_DIR = "../models/policies";
+
 /**
  * Create a hash id for use in cdk
  * @param context context
@@ -14,6 +17,28 @@ export function createHashId(context: string): string {
 }
 
 /**
+ * Load a configuration data
+ * @param filename file name
+ * @returns configuration data (json format)
+ */
+export function loadConfiguration(filename: string): any {
+  try {
+    // Create file path
+    const filePath = join(__dirname, CONFIG_DIR, `${filename}.json`);
+    // Read a file data
+    const data = readFileSync(filePath).toString();
+    // Transform to json and return transformed data
+    return JSON.parse(data);
+  } catch (err) {
+    if (typeof err === "string") {
+      printMessageForError(err);
+    } else if (err instanceof Error) {
+      printMessageForError(err.message);
+    }
+  }
+}
+
+/**
  * Load a policy document for service
  * @param service service type
  * @returns policy document (json format)
@@ -21,7 +46,7 @@ export function createHashId(context: string): string {
 export function loadPolicyDocument(service: string): any {
   try {
     // Create file path
-    const filePath = join(__dirname, "../models/policies", `${service}.json`);
+    const filePath = join(__dirname, POLICY_DIR, `${service}.json`);
     // Read a file data
     const data = readFileSync(filePath).toString();
     // Transform to json and return transformed data

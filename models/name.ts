@@ -1,7 +1,8 @@
 /* Serivce name set */
 export const SERVICE_NAME = {
-  SNS: "v2pc-backend-build-notifications",
-  SQS: "v2pc-backend-build-result-queue"
+  S3: "v2pc-inspactor-operation-management",
+  SNS: "v2pc-inspactor-build-notifications",
+  SQS: "v2pc-inspactor-build-result-queue"
 };
 /* Service type set */
 export const SERVICE_TYPE = {

@@ -27,10 +27,10 @@ export class Topic {
         value: name
       },{
         key: "Position",
-        value: "Notifications"
+        value: "notifications"
       },{
         key: "Project",
-        value: "CICD-for-backend"
+        value: "CICD-for-v2pc-inspector-backend"
       }],
       topicName: name
     };
@@ -58,16 +58,17 @@ export class Topic {
 
   /**
    * Get a arn for toipc
+   * @returns arn for topic
    */
-  public getArn() {
+  public getArn(): string {
     return this._topic.ref;
   }
 
   /**
    * Get a name for topic
-   * @returns 
+   * @returns name for topic
    */
-  public getName() {
+  public getName(): string {
     return this._topic.attrTopicName;
   }
 

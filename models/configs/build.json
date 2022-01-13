@@ -1,0 +1,18 @@
+[{
+  "description": "builder for testCodeDeployLambda in v2pc backend",
+  "environments": [{
+    "name": "DEPLOY_LAMBDA_NAME",
+    "value": "testCodeDeployLambda"
+  },{
+    "name": "DEPLOY_LAMBDA_ALIAS",
+    "value": "testCodeDeployLambda"
+  },{
+    "name": "S3_BUCKET",
+    "value": "v2pc-operation-management"
+  }],
+  "name": "build-testCodeDeployLambda",
+  "source": {
+    "branch": "master",
+    "location": "https://github.com/hmin01/deploy-lambda.git"
+  }
+}]
