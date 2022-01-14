@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 // Name set
 import { SERVICE_NAME } from '../models/name';
 // Resources
-import { BuildProject } from '../resources/codebuild';
+import { BuildProject, createSourceCredentials } from '../resources/codebuild';
 import { Application } from '../resources/codedeploy';
 import { Role } from '../resources/iam';
 import { LambdaFunction } from '../resources/lambda';
@@ -16,10 +16,6 @@ import { loadConfiguration } from '../utils/util';
 export class V2PcBackendInfraForCicdStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
-
-    // Set environment variables
-    process.env.account = "";
-    process.env.region = "ap-northeast-2";
 
     // Create an amazon s3 (bucket)
     const bucket = new Bucket(this);
@@ -34,7 +30,7 @@ export class V2PcBackendInfraForCicdStack extends Stack {
     topic.setSubscripitionToSqs(queue.getArn());
 
     // Create the aws codebulid (build project)
-    createBuildProjects(this, bucket.getArn(), topic.getArn());
+    createBuildProjects(this, bucket.getArn(), bucket.getName(), topic.getArn());
 
     // Create the aws lambda (function for deploy)
     createLambdaFunctionForDeploy(this, queue.getArn());
@@ -50,7 +46,10 @@ export class V2PcBackendInfraForCicdStack extends Stack {
  * @param bucketArn arn for a3 bucket
  * @param topicArn arn for sns topic
  */
-function createBuildProjects(scope: Construct, bucketArn: string, topicArn: string): void {
+function createBuildProjects(scope: Construct, bucketArn: string, bucketName: string, topicArn: string): void {
+  // Set a source credentials for codebuild
+  createSourceCredentials(scope);
+
   // Create a role for build project
   const role = new Role(scope);
   role.init("roleForCodeBuild");
@@ -60,7 +59,7 @@ function createBuildProjects(scope: Construct, bucketArn: string, topicArn: stri
   // Create the build project based config
   for (const config of configs) {
     const buildProject = new BuildProject(scope);
-    buildProject.init(config, role.getArn(), bucketArn);
+    buildProject.init(config, role.getArn(), bucketArn, bucketName);
     // Create a notification rule
     buildProject.createNotificationRule(topicArn);
   }

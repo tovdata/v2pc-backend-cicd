@@ -1,8 +1,11 @@
 import { Construct } from "constructs";
 import * as codebuild from "aws-cdk-lib/aws-codebuild";
 import * as codestarnotifications from "aws-cdk-lib/aws-codestarnotifications";
+import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 // Util
 import { createHashId } from "../utils/util";
+// Name set
+import { SERVICE_NAME } from "../models/name";
 
 export class BuildProject {
   private _project: codebuild.CfnProject;
@@ -17,8 +20,9 @@ export class BuildProject {
    * @param config build project configuration
    * @param roleArn arn for role
    * @param bucketArn arn for bucket to store the artifacts
+   * @param bucketName name for bucket to store the output
    */
-  public init(config: any, roleArn: string, bucketArn: string): void {
+  public init(config: any, roleArn: string, bucketArn: string, bucketName: string): void {
     // Create artifacts properties (Ref. https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/aws-properties-codebuild-project-artifacts.html)
     const artifacts: codebuild.CfnProject.ArtifactsProperty = {
       location: bucketArn,
@@ -138,4 +142,23 @@ export class BuildProject {
     // Create cloudFormation resource for notification rule
     new codestarnotifications.CfnNotificationRule(this._scope, createHashId(JSON.stringify(props)), props);
   }
+}
+
+/**
+ * Create source credentials
+ * @description Create with the first call, and codebuild will continue to use the generated resource.
+ * @param scope scope context
+ */
+export function createSourceCredentials(scope: Construct): void {
+  // Get a secrets manager
+  const secretsManager = secretsmanager.Secret.fromSecretNameV2(scope, "TOVSecretManager", SERVICE_NAME.SECRETMANAGER);
+
+  // Set properties for source credentials (Ref. https://docs.aws.amazon.com/ko_kr/AWSCloudFormation/latest/UserGuide/aws-resource-codebuild-sourcecredential.html)
+  const props: codebuild.CfnSourceCredentialProps = {
+    authType: "PERSONAL_ACCESS_TOKEN",
+    serverType: "GITHUB",
+    token: secretsManager.secretValue.toString()
+  };
+  // Create cloudFormation resource for source credentials for codebuild
+  new codebuild.CfnSourceCredential(scope, createHashId(JSON.stringify(props)), props);
 }

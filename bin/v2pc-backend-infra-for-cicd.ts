@@ -4,6 +4,10 @@ import * as cdk from 'aws-cdk-lib';
 import { V2PcBackendInfraForCicdStack } from '../lib/v2pc-backend-infra-for-cicd-stack';
 
 const app = new cdk.App();
+
+process.env.ACCOUNT = "";
+process.env.REGION = "ap-northeast-2";
+
 new V2PcBackendInfraForCicdStack(app, 'V2PcBackendInfraForCicdStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
@@ -15,7 +19,7 @@ new V2PcBackendInfraForCicdStack(app, 'V2PcBackendInfraForCicdStack', {
 
   /* Uncomment the next line if you know exactly what Account and Region you
    * want to deploy the stack to. */
-  env: { account: '', region: 'ap-northeast-2' },
+  env: { account: process.env.ACCOUNT, region: process.env.REGION }
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });

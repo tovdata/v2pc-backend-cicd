@@ -6,6 +6,7 @@ import { printMessageForError } from "./print";
 
 // Directory path
 const CONFIG_DIR = join(__dirname, "../models/configs");
+const PARAMS_DIR = join(__dirname, "../models/params");
 const POLICY_DIR = join(__dirname, "../models/policies");
 
 /**
@@ -52,6 +53,28 @@ export function loadPolicyDocument(service: string): any {
     const data = readFileSync(filePath).toString();
     // Transform to json and return transformed data
     return JSON.parse(data);
+  } catch (err) {
+    if (typeof err === "string") {
+      printMessageForError(err);
+    } else if (err instanceof Error) {
+      printMessageForError(err.message);
+    }
+    // Exit
+    process.exit(1);
+  }
+}
+
+/**
+ * Laad a raw data
+ * @param filename file name
+ * @returns loaded raw data
+ */
+export function loadRawData(filename: string): string {
+  try {
+    // Create file path
+    const filePath = join(PARAMS_DIR, filename);
+    // Read a file data and return
+    return readFileSync(filePath).toString();
   } catch (err) {
     if (typeof err === "string") {
       printMessageForError(err);
